@@ -1,0 +1,84 @@
+<!-- <ul>
+{% for task in tasks %}
+    <li>
+        {% if task.done %} <strike> {% endif %}{{ task.content }} {% if task.done %} </strike>{% endif %}
+        <a href="/done/{{ task.id }}">X</a>
+        <a href="/delete/{{ task.id }}">Delete</a>
+    </li>
+{% endfor %}
+</ul>
+
+<form action="/task" method="post">
+    <p><input type="text" name="content"></p>
+    <input type="submit" value="Add task">
+</form> -->
+
+<!doctype html>
+<html lang="en">
+  <head>
+    {% block head %}
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    {% block styles %}
+    <!-- Bootstrap CSS -->
+    {{ bootstrap.load_css() }}
+    {% endblock %}
+
+    <title>说了啥</title>
+    {% endblock %}
+  </head>
+  <body class="container">
+    <!-- Your page content -->
+    {% block content %}
+
+    {% from 'bootstrap/form.html' import render_form, render_field %}
+    {% from 'bootstrap/pagination.html' import render_pager, render_pagination %}
+
+    <!-- <h1>render_form</h1>
+    {{ render_form(form) }} -->
+
+    <h1>请输入句子</h1>
+    <form method="post" action="/task">
+    {{ form.csrf_token }}
+    {{ render_field(form.content) }}
+    {{ render_field(form.submit) }}
+    </form>
+
+    <h1>所有结果展示：</h1>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th scope="col">原内容</th>
+          <th scope="col">subject</th>
+          <th scope="col">verb</th>
+          <th scope="col">sentence</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for source in sources %}
+          {% for result in source.results %}
+          <tr>
+            {% if loop.first %}
+            <th rowspan="{{ loop.length }}">{{ source.content }}</th>
+            {% endif %}
+            <td>{{ result.subject }}</td>
+            <td>{{ result.verb }}</td>
+            <td>{{ result.sentence}}</td>
+          </tr>
+          {% endfor %}
+        {% endfor %}
+      </tbody>
+    </table>
+    {{ render_pagination(pagination) }}
+
+    {% endblock %}
+
+
+    {% block scripts %}
+    <!-- Optional JavaScript -->
+    {{ bootstrap.load_js() }}
+    {% endblock %}
+  </body>
+</html>
